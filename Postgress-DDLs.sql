@@ -24,7 +24,7 @@ CREATE TABLE Department (
 
 CREATE TABLE Salary (
     ID serial primary key, 
-    Amount money
+    Amount int
 );
 
 CREATE TABLE Job (
@@ -67,14 +67,32 @@ SELECT DISTINCT city FROM proj_stg;
 
 INSERT INTO Office (location, address, city_id)
 SELECT DISTINCT st.location, st.address, c.id
-FROM proj_stg as st 
-JOIN city as c 
+FROM proj_stg AS st 
+JOIN city AS c 
 ON st.city = c.name;
 
 INSERT INTO Salary (amount)
 SELECT salary FROM proj_stg;
 
-INSERT INTO job (title) 
-SELECT Distinct job_title from proj_stg;
+INSERT INTO Job (title) 
+SELECT Distinct job_title FROM proj_stg;
 
-INSERT 
+INSERT INTO employee (name, email, education_id, department_id, salary_id, office_id, job_id)
+SELECT st.emp_nm, st.email, e.id, d.id, s.id, o.id, j.id 
+FROM proj_stg AS st  
+JOIN education AS e 
+ON st.education_lvl = e.level 
+JOIN department AS d 
+ON st.department_nm = d.name 
+JOIN salary AS s 
+ON st.salary = s.amount 
+JOIN office AS o 
+ON st.location = o.location  
+JOIN job as j 
+ON st.job_title = j.title;
+
+INSERT INTO employee (manager_id)
+SELECT e.id 
+FROM proj_stg AS st 
+JOIN employee AS e
+ON st.manager = e.name;  

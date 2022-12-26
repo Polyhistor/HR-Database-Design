@@ -44,14 +44,13 @@ CREATE TABLE Employee_History (
     End_Date date,
     Hire_date date,
     Employee_ID varchar(8) references Employee(ID),
-    primary key (Start_Date, End_Date, Employee_ID),
     Education_ID int references Education(ID),
     Department_ID int references Department(ID),
     Salary_ID int references Salary(ID),
     Manager_ID varchar(8) references Employee(ID),
     Office_ID int references Office(ID),
     Job_ID int references Job(ID),
-    primary key (Start_Date, Hire_date, Employee_ID)
+    primary key (Start_Date, End_Date, Employee_ID)
 );
 
 

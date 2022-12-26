@@ -5,16 +5,17 @@ CREATE TABLE Education (
     Level varchar(100)
 );
 
+CREATE TABLE City (
+    ID serial primary key,
+    State varchar(2), 
+    Name varchar(150)
+);
+
 CREATE TABLE Office (
     ID serial primary key, 
     Location varchar(250),
     Address varchar(500),
     City_ID int references City(ID)
-);
-
-CREATE TABLE City (
-    ID serial primary key, 
-    Name varchar(150)
 );
 
 CREATE TABLE Department (
@@ -32,25 +33,25 @@ CREATE TABLE Job (
     Title varchar(100)
 ); 
 
-
 CREATE TABLE Employee (
-ID serial primary key, 
+ID varchar(8) primary key, 
 Name varchar(100),
-Email varchar(150), 
-Education_ID int references Education(ID),
-Department_ID int references Department(ID),
-Salary_ID int references Salary(ID),
-Manager_ID int references Employee(ID),
-Office_ID int references Office(ID),
-Job_ID int references Job(ID)
+Email varchar(150)
 );
 
 CREATE TABLE Employee_History (
-    ID serial, 
     Start_Date date,
     End_Date date,
-    Employee_ID int references Employee(ID),
-    primary key (ID, Start_Date, End_Date, Employee_ID) 
+    Hire_date date,
+    Employee_ID varchar(8) references Employee(ID),
+    primary key (Start_Date, End_Date, Employee_ID),
+    Education_ID int references Education(ID),
+    Department_ID int references Department(ID),
+    Salary_ID int references Salary(ID),
+    Manager_ID varchar(8) references Employee(ID),
+    Office_ID int references Office(ID),
+    Job_ID int references Job(ID),
+    primary key (Start_Date, Hire_date, Employee_ID)
 );
 
 
@@ -77,8 +78,8 @@ SELECT salary FROM proj_stg;
 INSERT INTO Job (title) 
 SELECT Distinct job_title FROM proj_stg;
 
-INSERT INTO employee (name, email, education_id, department_id, salary_id, office_id, job_id)
-SELECT st.emp_nm, st.email, e.id, d.id, s.id, o.id, j.id 
+INSERT INTO employee (id, name, email, education_id, department_id, salary_id, office_id, job_id, manager_id)
+SELECT st.emp_id, st.emp_nm, st.email, e.id, d.id, s.id, o.id, j.id, stm.emp_id 
 FROM proj_stg AS st  
 JOIN education AS e 
 ON st.education_lvl = e.level 
@@ -88,11 +89,9 @@ JOIN salary AS s
 ON st.salary = s.amount 
 JOIN office AS o 
 ON st.location = o.location  
-JOIN job as j 
-ON st.job_title = j.title;
+JOIN job AS j 
+ON st.job_title = j.title
+LEFT JOIN proj_stg AS stm
+ON stm.emp_nm = st.manager;
 
-INSERT INTO employee (manager_id)
-SELECT e.id 
-FROM proj_stg AS st 
-JOIN employee AS e
-ON st.manager = e.name;  
+

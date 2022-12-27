@@ -105,4 +105,36 @@ JOIN job AS j
 ON st.job_title = j.title; 
 
 
+-- Queries Suggested 
 
+-- List of employees with Job Titles and Department Names
+SELECT e.name, d.name AS Department, j.title AS Job 
+FROM employee_history AS eh 
+JOIN employee AS e
+ON eh.employee_id = e.id 
+JOIN department AS d 
+ON eh.department_id =  d.id 
+JOIN job AS j 
+ON eh.job_id = j.id;
+ 
+-- Insert Web Programmer as a new job title
+INSERT INTO job (title) 
+values('Web Programmer');
+
+-- Correct the job title from web programmer to web developer
+UPDATE job 
+SET title = 'Web Developer'
+WHERE title = 'Web Programmer';
+
+-- Delete the job title Web Developer from the database
+DELETE FROM job 
+WHERE title = 'Web Developer';
+
+-- How many employees are in each department
+SELECT count(eh.employee_id), d.name 
+FROM employee_history as eh
+JOIN department AS d 
+ON eh.department_id = d.id  
+GROUP BY d.name;
+
+-- A query that returns current and past jobs (include employee name, job title, department, manager name, start and end date for position) for employee Toni Lembeck.

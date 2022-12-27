@@ -64,8 +64,8 @@ INSERT INTO Education (level)
 SELECT DISTINCT education_lvl 
 FROM proj_stg;
 
-INSERT INTO City (name)
-SELECT DISTINCT city 
+INSERT INTO City (name, state)
+SELECT DISTINCT city, state
 FROM proj_stg;
 
 INSERT INTO Office (location, address, city_id)
@@ -149,3 +149,28 @@ ON eh.department_id = d.id
 JOIN employee AS em 
 ON eh.manager_id = em.id
 WHERE e.name = 'Toni Lembeck';
+
+-- Create a view that returns all employee attributes;
+
+CREATE VIEW Employee_Attriutes AS 
+SELECT e.name, ed.level AS Education_Level, d.name AS department, s.amount AS Salary, em.name AS Manager, o.location AS Location, c.state AS State, c.name AS city, j.title AS job, eh.start_date, eh.end_date, eh.hire_date 
+FROM employee_history AS eh 
+JOIN employee AS e
+ON eh.employee_id = e.id 
+JOIN education AS ed 
+ON eh.education_id = ed.id
+JOIN department AS d
+ON eh.department_id = d.id 
+JOIN salary AS s 
+ON eh.salary_id = s.id 
+JOIN employee AS em     
+ON eh.manager_id = em.id
+JOIN office AS o 
+ON eh.office_id = o.id 
+JOIN city AS c 
+ON o.city_id = c.id 
+JOIN job AS j 
+ON eh.job_id = j.id;
+
+-- Running the view 
+SELECT * FROM Employee_Attriutes;

@@ -138,3 +138,14 @@ ON eh.department_id = d.id
 GROUP BY d.name;
 
 -- A query that returns current and past jobs (include employee name, job title, department, manager name, start and end date for position) for employee Toni Lembeck.
+SELECT e.name, j.title, d.name AS department, em.name as manager, eh.start_date, eh.end_date 
+FROM employee_history AS eh 
+JOIN employee AS e 
+ON eh.employee_id = e.id 
+JOIN job AS j 
+ON eh.job_id = j.id 
+JOIN department AS d 
+ON eh.department_id = d.id 
+JOIN employee AS em 
+ON eh.manager_id = em.id
+WHERE e.name = 'Toni Lembeck';

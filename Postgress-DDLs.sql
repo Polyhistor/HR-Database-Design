@@ -151,7 +151,6 @@ ON eh.manager_id = em.id
 WHERE e.name = 'Toni Lembeck';
 
 -- Create a view that returns all employee attributes;
-
 CREATE VIEW Employee_Attriutes AS 
 SELECT e.name, ed.level AS Education_Level, d.name AS department, s.amount AS Salary, em.name AS Manager, o.location AS Location, c.state AS State, c.name AS city, j.title AS job, eh.start_date, eh.end_date, eh.hire_date 
 FROM employee_history AS eh 
@@ -174,3 +173,30 @@ ON eh.job_id = j.id;
 
 -- Running the view 
 SELECT * FROM Employee_Attriutes;
+
+-- A stored procedure with parameters that returns current and past jobs (include employee name, job title, department, manager name, start and end date for position) when given an employee name
+CREATE PROCEDURE SelectCurrentAndPastJobOfAnEmployee(name varchar(100))
+LANGUAGE SQL
+AS $$ 
+BEGIN 
+    SELECT e.name, j.title, d.name AS department, em.name as manager, eh.start_date, eh.end_date 
+    FROM employee_history AS eh 
+    JOIN employee AS e 
+    ON eh.employee_id = e.id 
+    JOIN job AS j 
+    ON eh.job_id = j.id 
+    JOIN department AS d 
+    ON eh.department_id = d.id 
+    JOIN employee AS em 
+    ON eh.manager_id = em.id
+    WHERE e.name = (name);
+END 
+$$;
+
+
+-- User security on the restricted salary attribute.
+CREATE USER NoMgr;
+
+GRANT ALL PRIVILEGES ON DATABASE postgres to NoMgr; 
+
+REVOKE ALL ON salary FROM NoMgr;

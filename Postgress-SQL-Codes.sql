@@ -97,12 +97,13 @@ JOIN department AS d
 ON st.department_nm = d.name 
 JOIN salary AS s 
 ON st.salary = s.amount 
-JOIN proj_stg as st2
-ON st.manager = st2.emp_nm
+LEFT JOIN proj_stg as st2
+ON st.manager = st2.emp_nm 
 JOIN office AS o 
 ON st.location = o.location
 JOIN job AS j 
-ON st.job_title = j.title; 
+ON st.job_title = j.title;
+
 
 
 -- Queries Suggested 
